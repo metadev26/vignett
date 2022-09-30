@@ -46,23 +46,23 @@
                 size_x = scale;
                 size_y = scale;
                 rcolor = 1.0 * scale / 250.0; 
-            } else if(scale < 700.0) {
+            } else if(scale < 700.0){
                 size_y = 250.0 + (scale - 250.0) / 3.0;
                 size_x = scale;
-                rad = size_y / 2.0;
+                rad = scale / 2.0;
                 rcolor = 1.0;
                 gcolor = 1.0 * (scale - 250.0) / 450.0;
             } else if(scale < iResolution.x - 300.0) {
                 size_y = 400.0;
                 size_x = scale;
-                rad = 200.0;
+                rad = 300.0;
                 rcolor = 1.0;
                 gcolor = 1.0;
                 bcolor = 1.0 * (scale - 700.0) / (iResolution.x - 1000.0);
             } else if(scale < iResolution.x){
                 size_x = scale;
                 size_y = 400.0 + (scale - iResolution.x + 300.0) * (iResolution.y - 400.0) / 300.0;
-                rad = min(iResolution.x - size_x, 200.0);
+                rad = iResolution.x - size_x;
                 rcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
                 gcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
                 bcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
@@ -99,9 +99,9 @@
             float borderAlpha     = 1.0f-smoothstep(borderThickness - borderSoftness, borderThickness, abs(distance));
 
             // Colors
-            vec4 rectColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+            vec4 rectColor = vec4(rcolor, gcolor, bcolor, 1.0f);
             vec4 borderColor = vec4(1.0f, 0.6f, 0.1f, 1.0f);
-            vec4 bgColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            vec4 bgColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
               
             gl_FragColor = mix(bgColor, mix(rectColor, borderColor, borderAlpha), smoothedAlpha);
 

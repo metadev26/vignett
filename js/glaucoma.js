@@ -73,7 +73,7 @@ function init(value) {
   composer.addPass( gblur );
   
   var gui = new GUI();//add control gui
-  gui.add(gblur.uniforms.scale, 'value', 100, 1400)
+  gui.add(gblur.uniforms.scale, 'value', 100.0, 1400)
   .name('scale');
 
   window.addEventListener('resize', onWindowResize);
