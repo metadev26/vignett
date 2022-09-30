@@ -2,7 +2,7 @@
  const Glaucoma = {
     
     uniforms: {
-        'scale': { value: 100.0 },
+        'scale': { value: 10.0 },
 
     },
     vertexShader: /* glsl */`
@@ -39,41 +39,80 @@
 
             vec2 iResolution = vec2(gl_FragCoord.x / vUv.x, gl_FragCoord.y / vUv.y);
 
-            float step = iResolution.x / 4.0;
-
-            if(scale < 250.0) {
-                rad = scale / 2.0;
-                size_x = scale;
-                size_y = scale;
-                rcolor = 1.0 * scale / 250.0; 
-            } else if(scale < 700.0) {
-                size_y = 250.0 + (scale - 250.0) / 3.0;
-                size_x = scale;
-                rad = size_y / 2.0;
-                rcolor = 1.0;
-                gcolor = 1.0 * (scale - 250.0) / 450.0;
-            } else if(scale < iResolution.x - 300.0) {
-                size_y = 400.0;
-                size_x = scale;
-                rad = 200.0;
-                rcolor = 1.0;
-                gcolor = 1.0;
-                bcolor = 1.0 * (scale - 700.0) / (iResolution.x - 1000.0);
-            } else if(scale < iResolution.x){
-                size_x = scale;
-                size_y = 400.0 + (scale - iResolution.x + 300.0) * (iResolution.y - 400.0) / 300.0;
-                rad = min(iResolution.x - size_x, 200.0);
-                rcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
-                gcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
-                bcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
+            float step_x = iResolution.x / 4.0;
+            float step_y = iResolution.y / 4.;
+            if(step_y < step_x){
+                float tang = step_x / step_y;
+                    if(scale < step_y) {
+                        rad = scale / 2.0;
+                        size_x = scale;
+                        size_y = scale;
+                        rcolor = 1.0 * scale / 250.0; 
+                    } else if(scale < 2. * step_y) {
+                        size_y = scale;
+                        size_x = step_y + (scale - step_y) * tang;
+                        rad = scale / 2.0;
+                        rcolor = 1.0;
+                        gcolor = 1.0 * (scale - 250.0) / 450.0;
+                    } else if(scale < 3. * step_y) {
+                        size_y = scale;
+                        size_x = step_y + step_x + (scale - 2. * step_y) * tang;
+                        rad = step_y;
+                        rcolor = 1.0;
+                        gcolor = 1.0;
+                        bcolor = 1.0 * (scale - 700.0) / (iResolution.x - 1000.0);
+                    } else if(scale < iResolution.y){
+                        size_x = step_y + 2. * step_x + (iResolution.x - step_y - 2. * step_x) * (scale - 3. * step_y) / step_y;
+                        size_y = scale;
+                        rad = step_y - (scale - 3. * step_y);
+                        rcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
+                        gcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
+                        bcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
+                    } else {
+                        size_x = iResolution.x;
+                        size_y = iResolution.y;
+                        rad = 0.0;
+                        rcolor = 1.0;
+                        bcolor = 1.0;
+                        gcolor = 1.0;
+                    }
             } else {
-                size_x = iResolution.x;
-                size_y = iResolution.y;
-                rad = 0.0;
-                rcolor = 1.0;
-                bcolor = 1.0;
-                gcolor = 1.0;
+                float tang = step_y / step_x;
+                    if(scale < step_x) {
+                        rad = scale / 2.0;
+                        size_y = scale;
+                        size_x = scale;
+                        rcolor = 1.0 * scale / 250.0; 
+                    } else if(scale < 2. * step_x) {
+                        size_x = scale;
+                        size_y = step_x + (scale - step_x) * tang;
+                        rad = scale / 2.0;
+                        rcolor = 1.0;
+                        gcolor = 1.0 * (scale - 250.0) / 450.0;
+                    } else if(scale < 3. * step_x) {
+                        size_x = scale;
+                        size_y = step_x + step_y + (scale - 2. * step_x) * tang;
+                        rad = step_x;
+                        rcolor = 1.0;
+                        gcolor = 1.0;
+                        bcolor = 1.0 * (scale - 700.0) / (iResolution.x - 1000.0);
+                    } else if(scale < iResolution.y){
+                        size_y = step_x + 2. * step_y + (iResolution.y - step_x - 2. * step_y) * (scale - 3. * step_x) / step_x;
+                        size_x = scale;
+                        rad = step_x - (scale - 3. * step_x);
+                        rcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
+                        gcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
+                        bcolor = 1.0 - 1.0 * (scale - iResolution.x + 300.0) / 300.0;
+                    } else {
+                        size_y = iResolution.y;
+                        size_x = iResolution.x;
+                        rad = 0.0;
+                        rcolor = 1.0;
+                        bcolor = 1.0;
+                        gcolor = 1.0;
+                    }
             }
+
             vec2 size = vec2(size_x, size_y);
 
             // The pixel space location of the rectangle.
